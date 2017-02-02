@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { Meteor } from 'meteor/meteor';
 import { createContainer } from 'meteor/react-meteor-data';
 import { bindAll } from 'lodash';
 
@@ -34,6 +35,8 @@ class App extends React.Component {
     Tasks.insert({
       text: task,
       createdAt: new Date(),
+      owner: Meteor.userId(),
+      username: Meteor.user().username,
     });
   }
 
@@ -65,6 +68,9 @@ class App extends React.Component {
   }
 
   render() {
+    const taskInputBox = this.props.currentUser ?
+      <NewTaskInput submitNewTask={this.submitNewTask} /> : '';
+
     return (
       <div className="container">
         <header>
@@ -74,7 +80,7 @@ class App extends React.Component {
             toggleHideCompleted={this.toggleHideCompleted}
           />
           <AccountsUIWrapper />
-          <NewTaskInput submitNewTask={this.submitNewTask} />
+          {taskInputBox}
         </header>
 
         <ul>
@@ -94,5 +100,6 @@ export default createContainer(() => {
   return {
     tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
     incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
+    currentUser: Meteor.user(),
   };
 }, App);

@@ -3,10 +3,23 @@ import { createContainer } from 'meteor/react-meteor-data';
 
 import { Tasks } from '../api/tasks.js';
 
+import NewTaskInput from './new-task-input.js';
 import Task from './task.js';
 
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.submitNewTask = this.submitNewTask.bind(this);
+  }
+
+  submitNewTask(task) {
+    Tasks.insert({
+      text: task,
+      createdAt: new Date(),
+    });
+  }
+
   renderTasks() {
     return this.props.tasks.map((task) => (
       <Task key={task._id} task={task} />
@@ -18,6 +31,7 @@ class App extends React.Component {
       <div className="container">
         <header>
           <h1>Tödös</h1>
+          <NewTaskInput submitNewTask={this.submitNewTask} />
         </header>
 
         <ul>

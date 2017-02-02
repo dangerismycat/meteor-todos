@@ -4,6 +4,7 @@ import { bindAll } from 'lodash';
 
 import { Tasks } from '../api/tasks.js';
 
+import AccountsUIWrapper from './accounts-ui-wrapper.js';
 import HideCompletedCheckbox from './hide-completed-checkbox.js';
 import NewTaskInput from './new-task-input.js';
 import Task from './task.js';
@@ -72,6 +73,7 @@ class App extends React.Component {
             hideCompleted={this.state.hideCompleted}
             toggleHideCompleted={this.toggleHideCompleted}
           />
+          <AccountsUIWrapper />
           <NewTaskInput submitNewTask={this.submitNewTask} />
         </header>
 

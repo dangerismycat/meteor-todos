@@ -19,7 +19,7 @@ function Task(props) {
       />
 
       <span className="text">
-        {task.text}
+        <strong>{task.username}</strong>: {task.text}
       </span>
     </li>
   );

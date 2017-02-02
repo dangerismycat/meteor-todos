@@ -4,6 +4,7 @@ import { bindAll } from 'lodash';
 
 import { Tasks } from '../api/tasks.js';
 
+import HideCompletedCheckbox from './hide-completed-checkbox.js';
 import NewTaskInput from './new-task-input.js';
 import Task from './task.js';
 
@@ -15,8 +16,13 @@ class App extends React.Component {
     bindAll(this,
       'deleteTask',
       'submitNewTask',
+      'toggleHideCompleted',
       'toggleTaskChecked',
     );
+
+    this.state = {
+      hideCompleted: false,
+    };
   }
 
   deleteTask(task) {
@@ -30,6 +36,10 @@ class App extends React.Component {
     });
   }
 
+  toggleHideCompleted() {
+    this.setState({ hideCompleted: !this.state.hideCompleted });
+  }
+
   toggleTaskChecked(task) {
     Tasks.update(task._id, {
       $set: { checked: !task.checked },
@@ -37,7 +47,13 @@ class App extends React.Component {
   }
 
   renderTasks() {
-    return this.props.tasks.map((task) => (
+    let filteredTasks = this.props.tasks;
+
+    if (this.state.hideCompleted) {
+      filteredTasks = filteredTasks.filter((task) => !task.checked);
+    }
+
+    return filteredTasks.map((task) => (
       <Task
         key={task._id}
         task={task}
@@ -52,6 +68,10 @@ class App extends React.Component {
       <div className="container">
         <header>
           <h1>Tödös</h1>
+          <HideCompletedCheckbox
+            hideCompleted={this.state.hideCompleted}
+            toggleHideCompleted={this.toggleHideCompleted}
+          />
           <NewTaskInput submitNewTask={this.submitNewTask} />
         </header>
 

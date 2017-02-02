@@ -28,16 +28,11 @@ class App extends React.Component {
   }
 
   deleteTask(task) {
-    Tasks.remove(task._id);
+    Meteor.call('tasks.remove', task._id);
   }
 
-  submitNewTask(task) {
-    Tasks.insert({
-      text: task,
-      createdAt: new Date(),
-      owner: Meteor.userId(),
-      username: Meteor.user().username,
-    });
+  submitNewTask(taskText) {
+    Meteor.call('tasks.insert', taskText);
   }
 
   toggleHideCompleted() {
@@ -45,9 +40,7 @@ class App extends React.Component {
   }
 
   toggleTaskChecked(task) {
-    Tasks.update(task._id, {
-      $set: { checked: !task.checked },
-    });
+    Meteor.call('tasks.setChecked', task._id, !task.checked);
   }
 
   renderTasks() {

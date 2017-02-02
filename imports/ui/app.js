@@ -67,7 +67,7 @@ class App extends React.Component {
     return (
       <div className="container">
         <header>
-          <h1>Tödös</h1>
+          <h1>Tödös ({this.props.incompleteCount} to go)</h1>
           <HideCompletedCheckbox
             hideCompleted={this.state.hideCompleted}
             toggleHideCompleted={this.toggleHideCompleted}
@@ -84,13 +84,13 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  incompleteCount: PropTypes.number.isRequired,
   tasks: PropTypes.array.isRequired,
 };
 
 export default createContainer(() => {
   return {
-    tasks: Tasks.find({},
-      { sort: { createdAt: -1 } }
-    ).fetch(),
+    tasks: Tasks.find({}, { sort: { createdAt: -1 } }).fetch(),
+    incompleteCount: Tasks.find({ checked: { $ne: true } }).count(),
   };
 }, App);

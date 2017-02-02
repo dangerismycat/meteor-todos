@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import { createContainer } from 'meteor/react-meteor-data';
+import { bindAll } from 'lodash';
 
 import { Tasks } from '../api/tasks.js';
 
@@ -10,7 +11,16 @@ import Task from './task.js';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    this.submitNewTask = this.submitNewTask.bind(this);
+
+    bindAll(this,
+      'deleteTask',
+      'submitNewTask',
+      'toggleTaskChecked',
+    );
+  }
+
+  deleteTask(task) {
+    Tasks.remove(task._id);
   }
 
   submitNewTask(task) {
@@ -20,9 +30,20 @@ class App extends React.Component {
     });
   }
 
+  toggleTaskChecked(task) {
+    Tasks.update(task._id, {
+      $set: { checked: !task.checked },
+    });
+  }
+
   renderTasks() {
     return this.props.tasks.map((task) => (
-      <Task key={task._id} task={task} />
+      <Task
+        key={task._id}
+        task={task}
+        deleteTask={this.deleteTask}
+        toggleTaskChecked={this.toggleTaskChecked}
+      />
     ));
   }
 

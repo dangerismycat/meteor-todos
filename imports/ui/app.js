@@ -19,6 +19,7 @@ class App extends React.Component {
       'deleteTask',
       'submitNewTask',
       'toggleHideCompleted',
+      'togglePrivateButton',
       'toggleTaskChecked',
     );
 
@@ -39,6 +40,10 @@ class App extends React.Component {
     this.setState({ hideCompleted: !this.state.hideCompleted });
   }
 
+  togglePrivateButton(task) {
+    Meteor.call('tasks.setPrivate', task._id, ! task.private);
+  }
+
   toggleTaskChecked(task) {
     Meteor.call('tasks.setChecked', task._id, !task.checked);
   }
@@ -50,14 +55,21 @@ class App extends React.Component {
       filteredTasks = filteredTasks.filter((task) => !task.checked);
     }
 
-    return filteredTasks.map((task) => (
-      <Task
-        key={task._id}
-        task={task}
-        deleteTask={this.deleteTask}
-        toggleTaskChecked={this.toggleTaskChecked}
-      />
-    ));
+    return filteredTasks.map((task) => {
+      const currentUserId = this.props.currentUser && this.props.currentUser._id;
+      const showPrivateButton = task.owner === currentUserId;
+
+      return (
+        <Task
+          key={task._id}
+          task={task}
+          deleteTask={this.deleteTask}
+          showPrivateButton={showPrivateButton}
+          togglePrivateButton={this.togglePrivateButton}
+          toggleTaskChecked={this.toggleTaskChecked}
+        />
+      )
+    });
   }
 
   render() {

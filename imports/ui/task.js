@@ -27,7 +27,7 @@ function Task(props) {
 
 Task.propTypes = {
   task: PropTypes.shape({
-    _id: PropTypes.number,
+    _id: PropTypes.string,
     text: PropTypes.string,
   }).isRequired,
   deleteTask: PropTypes.func.isRequired,
